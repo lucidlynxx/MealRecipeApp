@@ -1,0 +1,72 @@
+﻿@page "/category/{category?}"
+@model MealRecipeApp.Pages.Category.IndexModel
+@{
+    ViewData["Title"] = Model.category ?? "Categories";
+}
+
+@if (Model.category != null && Model.category.Any())
+{
+    <h1 class="d-flex mb-4">Categorized by Category : @Model.category</h1>
+}
+else 
+{
+    <h1 class="d-flex justify-content-center">All Category</h1>
+
+    <p class="mb-4 d-flex justify-content-center">List all categories.</p>
+}
+
+@if (Model.Categories.Categories != null && Model.Categories.Categories.Any())
+{
+    <div class="row">
+        @foreach(var item in Model.Categories.Categories)
+        {
+            <div class="col-6">
+                <div class="card border-dark bg-dark mb-3" style="max-width: 650px;">
+                <div class="row g-0">
+                    <div class="col-md-5">
+                    <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="img-fluid rounded-start bg-light" alt="@item.Name">
+                    </div>
+                    <div class="col-md-7">
+                    <div class="card-body">
+                        <h5 class="card-title text-light">
+                            <a class="text-light text-decoration-none" target="_blank" asp-page="/Category/Index" asp-route-category="@item.Name">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </h5>
+                        @{
+                            var description = item.Description ?? "";
+                            var limitedDescription = string.Join(" ", description.Split(' ').Take(15)) + (description.Split(' ').Length > 15 ? "..." : "");
+                        }
+                        <p class="card-text text-light">@Html.DisplayFor(modelItem => limitedDescription)</p>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else if (Model.categorizedRecipe.Meals != null && Model.categorizedRecipe.Meals.Any())
+{
+    <div class="row">
+    @foreach (var item in Model.categorizedRecipe.Meals)
+    {
+        <div class="col-sm-3 mb-4 mb-sm-0">
+            <div class="card mb-4" style="width: 16rem;">
+                <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="card-img-top" alt="@item.Name">
+                <div class="card-body bg-dark">
+                    <h6 class="card-title">
+                        <a class="text-light text-decoration-none" target="_blank" asp-page="/Meal/Index" asp-route-id="@item.Id">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+else
+{
+    <p class="text-center">No Data</p>
+}

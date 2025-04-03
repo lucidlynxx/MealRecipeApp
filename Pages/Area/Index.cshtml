@@ -1,0 +1,60 @@
+﻿@page "/area/{area?}"
+@model MealRecipeApp.Pages.Area.IndexModel
+@{
+    ViewData["Title"] = Model.area ?? "Areas";
+}
+
+@if (Model.area != null && Model.area.Any())
+{
+    <h1 class="d-flex mb-4">Categorized by Area : @Model.area</h1>
+}
+else 
+{
+    <h1 class="d-flex justify-content-center">All Areas</h1>
+
+    <p class="mb-4 d-flex justify-content-center">List all areas.</p>
+}
+
+@if (Model.Areas.Areas != null && Model.Areas.Areas.Any())
+{
+    <div class="row">
+        @foreach (var item in Model.Areas.Areas)
+        {
+        <div class="col-3">
+            <div class="card border-dark bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title text-light">
+                        <a class="text-light text-decoration-none" asp-page="/Area/Index" asp-route-area="@item.Name">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h5>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+}
+else if (Model.categorizedRecipe.Meals != null && Model.categorizedRecipe.Meals.Any())
+{
+    <div class="row">
+    @foreach (var item in Model.categorizedRecipe.Meals)
+    {
+        <div class="col-sm-3 mb-4 mb-sm-0">
+            <div class="card mb-4" style="width: 16rem;">
+                <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="card-img-top" alt="@item.Name">
+                <div class="card-body bg-dark">
+                    <h6 class="card-title">
+                        <a class="text-light text-decoration-none" target="_blank" asp-page="/Meal/Index" asp-route-id="@item.Id">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+else
+{
+    <p class="text-center">No Data</p>
+}

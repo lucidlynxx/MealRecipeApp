@@ -1,0 +1,49 @@
+﻿@page "/{alphabet?}"
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Meal Recipe App</h1>
+    <p class="mb-4">List all meals by first letter</p>
+</div>
+
+<div class="gap-2 d-flex justify-content-center mb-4">
+    @foreach (char c in Enumerable.Range('A', 26).Select(x => (char)x))
+    {
+    <a class="btn btn-dark" asp-page="/Index" asp-route-alphabet="@c">
+        @c
+    </a>
+    }
+</div>
+
+@if (Model.Recipes.Meals != null && Model.Recipes.Meals.Any())
+{
+    <div class="row">
+    @foreach (var item in Model.Recipes.Meals)
+    {
+        <div class="col-sm-3 mb-4 mb-sm-0">
+            <div class="card mb-4" style="width: 16rem;">
+                <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="card-img-top" alt="@item.Name">
+                <div class="card-body bg-dark">
+                    <h6 class="card-title">
+                        <a class="text-light text-decoration-none" target="_blank" asp-page="/Meal/Index" asp-route-id="@item.Id">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h6>
+                        @{
+                            var instructions = item.Instructions ?? "";
+                            var limitedInstructions = string.Join(" ", instructions.Split(' ').Take(10)) + (instructions.Split(' ').Length > 10 ? "..." : "");
+                        }
+                    <p class="card-text text-light">@Html.DisplayFor(modelItem => limitedInstructions)</p>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+else 
+{
+    <p class="text-center">No Data</p>
+}

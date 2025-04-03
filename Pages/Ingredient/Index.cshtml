@@ -1,0 +1,99 @@
+﻿@page "/ingredient/{ingredient?}"
+@model MealRecipeApp.Pages.Ingredient.IndexModel
+@{
+    ViewData["Title"] = Model.ingredient ?? "Ingredients";
+}
+
+@if (Model.ingredient != null && Model.ingredient.Any())
+{
+    <h1 class="d-flex mb-4">Categorized by Main Ingredients : @Model.ingredient</h1>
+}
+else 
+{
+    <h1 class="d-flex justify-content-center">All Meal Ingredients</h1>
+
+    <p class="mb-4 d-flex justify-content-center">List all meal ingredients.</p>
+
+    <div class="mb-4 d-flex justify-content-center">
+        <form class="row g-2 w-50">
+            <div class="col-10">
+                <label for="SearchInput" class="visually-hidden">Search Ingredients</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Type here to search ingredients">
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-dark">Search</button>
+            </div>
+        </form>
+    </div>
+}
+
+@if (Model.Ingredients.Ingredients != null && Model.Ingredients.Ingredients.Any())
+{
+    <div class="row">
+        @foreach (var item in Model.Ingredients.Ingredients)
+        {
+        <div class="col-3">
+            <div class="card border-dark bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title text-light">
+                        <a class="text-light text-decoration-none" target="_blank" asp-page="/Ingredient/Index" asp-route-ingredient="@item.Name">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h5>
+                        @{
+                            var type = item.Type ?? "";
+                        }
+                        <h6 class="card-subtitle mb-2 text-light">@Html.DisplayFor(modelItem => type)</h6>
+                        @{
+                            var description = item.Description ?? "";
+                            var limitedDescription = string.Join(" ", description.Split(' ').Take(10)) + (description.Split(' ').Length > 10 ? "..." : "");
+                        }
+                    <p class="card-text text-light">@Html.DisplayFor(modelItem => limitedDescription)</p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+}
+else if (Model.categorizedRecipe.Meals != null && Model.categorizedRecipe.Meals.Any())
+{
+    <div class="row">
+    @foreach (var item in Model.categorizedRecipe.Meals)
+    {
+        <div class="col-sm-3 mb-4 mb-sm-0">
+            <div class="card mb-4" style="width: 16rem;">
+                <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="card-img-top" alt="@item.Name">
+                <div class="card-body bg-dark">
+                    <h6 class="card-title">
+                        <a class="text-light text-decoration-none" target="_blank" asp-page="/Meal/Index" asp-route-id="@item.Id">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+else
+{
+    <p class="text-center">No Data</p>
+}
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+    let keyword = this.value.toLowerCase(); // Ambil teks input dan ubah ke lowercase
+    let items = document.querySelectorAll(".col-3"); // Ambil semua item dalam list
+
+    items.forEach(function (item) {
+            let recipeName = item.querySelector(".card-title").textContent.toLowerCase(); // Ambil teks dari card-title
+            if (recipeName.includes(keyword)) {
+                item.classList.add("d-block"); // Tampilkan item jika cocok
+                item.classList.remove("d-none"); 
+            } else {
+                item.classList.add("d-none"); // Sembunyikan item jika tidak cocok
+                item.classList.remove("d-block");
+            }
+        });
+    });
+</script>

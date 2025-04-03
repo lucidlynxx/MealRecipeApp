@@ -1,0 +1,59 @@
+﻿@page "/random"
+@model MealRecipeApp.Pages.Random.IndexModel
+@{
+    ViewData["Title"] = "Random Meal";
+}
+
+<h1 class="d-flex justify-content-center">Single Random Meal</h1>
+
+<p class="mb-4 d-flex justify-content-center">Use this page to find a random single meal.</p>
+
+@if (Model.Recipe.Meals != null && Model.Recipe.Meals.Any())
+{
+    @foreach (var item in Model.Recipe.Meals)
+    {
+        <div class="mb-3 d-flex justify-content-center">
+            <div class="row">
+                <div class="col-4">
+                    <img src="@Html.DisplayFor(modelItem => item.Thumb)" class="img-fluid rounded" style="width: 500px;" alt="@item.Name">
+                </div>
+                <div class="col-8">
+                    <div class="card border-dark bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Tags : @Html.DisplayFor(modelItem => item.Tags)</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">Category : @Html.DisplayFor(modelItem => item.Category)</h6>
+                            <h6 class="card-subtitle mb-3 text-muted">Area : @Html.DisplayFor(modelItem => item.Area)</h6>
+                            <h5 class="card-title">Ingredients & Measures</h5>
+                            <ul class="list-group mb-3">
+                                @for (int i = 1; i <= 20; i++)
+                                {
+                                    var ingredient = item.GetType().GetProperty($"Ingredient{i}")?.GetValue(item, null) as string;
+                                    var measure = item.GetType().GetProperty($"Measure{i}")?.GetValue(item, null) as string;
+
+                                    if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(measure))
+                                    {
+                                        <li class="list-group-item list-group-item-secondary">
+                                            @ingredient - @measure
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                            <h5 class="card-title">Instructions</h5>
+                            <p class="card-text mb-3">@Html.DisplayFor(modelItem => item.Instructions)</p>
+                            <a href="@Html.DisplayFor(modelItem => item.Youtube)" class="btn btn-danger" target="_blank">Youtube</a>
+                            <a href="@Html.DisplayFor(modelItem => item.Source)" class="btn btn-primary" target="_blank">Source</a>
+                            @Html.DisplayFor(modelItem => item.ImageSource)
+                            @Html.DisplayFor(modelItem => item.CreativeCommonsConfirmed)
+                            @Html.DisplayFor(modelItem => item.DateModified)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-center">No Data</p>
+}
